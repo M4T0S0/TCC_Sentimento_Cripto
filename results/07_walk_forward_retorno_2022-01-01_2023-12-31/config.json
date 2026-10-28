@@ -1,0 +1,64 @@
+{
+  "alvo": "retorno",
+  "inicio": "2022-01-01",
+  "fim": "2023-12-31",
+  "moedas": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB",
+    "DOGE"
+  ],
+  "sementes": [
+    42,
+    7,
+    123,
+    2024,
+    31415
+  ],
+  "variantes": {
+    "financeiro": null,
+    "sentimento_ffill": "ffill",
+    "sentimento_btc": "btc"
+  },
+  "inicio_teste": "2022-05-01",
+  "meses_por_bloco": 2,
+  "regimes": {
+    "Queda 2022": [
+      "2022-05-01",
+      "2022-12-31"
+    ],
+    "Lateral 2023": [
+      "2023-01-01",
+      "2023-09-30"
+    ],
+    "Alta fim de 2023": [
+      "2023-10-01",
+      "2023-12-31"
+    ]
+  },
+  "hp": {
+    "LSTM": {
+      "janela": 14,
+      "hidden": 64,
+      "camadas": 2,
+      "dropout": 0.31005312934444584,
+      "lr": 0.007568292060167618,
+      "batch": 64,
+      "epocas": 100,
+      "paciencia": 15
+    },
+    "Transformer": {
+      "arquitetura": "Transformer",
+      "janela": 30,
+      "d_modelo": 16,
+      "cabecas": 4,
+      "camadas": 3,
+      "dropout": 0.16444241977155707,
+      "lr": 0.003403330706505351,
+      "batch": 16,
+      "epocas": 100,
+      "paciencia": 15
+    }
+  }
+}

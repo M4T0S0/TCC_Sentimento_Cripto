@@ -1,0 +1,8 @@
+variante,spearman_com_amanha,MAPE_%_LSTM,MAPE_%_Transformer,acerto_direcao_%_LSTM,acerto_direcao_%_Transformer
+financeiro,,2.186,2.19,44.364,44.0
+hoje,-0.058,2.187,2.18,45.818,47.273
+amanha_1.0,1.0,0.595,0.478,96.545,96.0
+amanha_0.5,0.359,2.13,2.111,58.545,58.364
+amanha_0.25,0.198,2.175,2.174,51.636,50.727
+amanha_0.1,0.117,2.188,2.181,44.364,49.455
+naive,,2.156,2.156,,

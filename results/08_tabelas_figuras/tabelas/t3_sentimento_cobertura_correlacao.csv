@@ -1,0 +1,6 @@
+moeda,textos_noticia,textos_tweet,cobertura_%_noticia,cobertura_%_tweet,p_SentimentoNoticia_amanha,p_SentimentoNoticia_hoje,p_SentimentoTweet_amanha,p_SentimentoTweet_hoje,rho_SentimentoNoticia_amanha,rho_SentimentoNoticia_hoje,rho_SentimentoTweet_amanha,rho_SentimentoTweet_hoje
+BTC,8805.0,5855.0,97.9,68.9,0.059,0.0,0.517,0.004,-0.071,0.17,0.029,0.128
+ETH,3426.0,2696.0,90.0,52.3,0.55,0.004,0.822,0.184,0.023,0.112,-0.012,0.068
+SOL,876.0,366.0,64.1,22.3,0.5,0.008,0.221,0.582,0.031,0.122,0.096,0.043
+BNB,513.0,538.0,51.0,25.2,0.862,0.006,0.976,0.038,0.009,0.141,0.002,0.153
+DOGE,654.0,332.0,58.2,14.5,0.654,0.015,0.866,0.187,0.022,0.118,-0.017,0.129

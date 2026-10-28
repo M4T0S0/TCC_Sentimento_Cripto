@@ -1,0 +1,10 @@
+{
+  "janela": 14,
+  "hidden": 64,
+  "camadas": 2,
+  "dropout": 0.31005312934444584,
+  "lr": 0.007568292060167618,
+  "batch": 64,
+  "epocas": 100,
+  "paciencia": 15
+}

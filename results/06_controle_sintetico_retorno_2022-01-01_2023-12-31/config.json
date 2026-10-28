@@ -1,0 +1,66 @@
+{
+  "alvo": "retorno",
+  "inicio": "2022-01-01",
+  "fim": "2023-12-31",
+  "moedas": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB",
+    "DOGE"
+  ],
+  "sementes": [
+    42,
+    7,
+    123,
+    2024,
+    31415
+  ],
+  "variantes": {
+    "hoje": [
+      "hoje",
+      1.0
+    ],
+    "amanha_1.0": [
+      "amanha",
+      1.0
+    ],
+    "amanha_0.5": [
+      "amanha",
+      0.5
+    ],
+    "amanha_0.25": [
+      "amanha",
+      0.25
+    ],
+    "amanha_0.1": [
+      "amanha",
+      0.1
+    ]
+  },
+  "semente_ruido": 42,
+  "hp": {
+    "LSTM": {
+      "janela": 14,
+      "hidden": 64,
+      "camadas": 2,
+      "dropout": 0.31005312934444584,
+      "lr": 0.007568292060167618,
+      "batch": 64,
+      "epocas": 100,
+      "paciencia": 15
+    },
+    "Transformer": {
+      "arquitetura": "Transformer",
+      "janela": 30,
+      "d_modelo": 16,
+      "cabecas": 4,
+      "camadas": 3,
+      "dropout": 0.16444241977155707,
+      "lr": 0.003403330706505351,
+      "batch": 16,
+      "epocas": 100,
+      "paciencia": 15
+    }
+  }
+}

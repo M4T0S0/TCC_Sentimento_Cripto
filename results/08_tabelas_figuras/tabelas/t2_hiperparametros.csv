@@ -1,0 +1,12 @@
+,LSTM,Transformer
+janela,14.0,30
+hidden,64.0,
+camadas,2.0,3
+dropout,0.31005312934444584,0.16444241977155707
+lr,0.007568292060167618,0.003403330706505351
+batch,64.0,16
+epocas,100.0,100
+paciencia,15.0,15
+d_modelo,,16
+cabecas,,4
+melhor_trial_MAPE_rede/naive,1.0069376963246306,1.0027054554441803

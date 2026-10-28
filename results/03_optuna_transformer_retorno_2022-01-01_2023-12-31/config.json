@@ -1,0 +1,45 @@
+{
+  "alvo": "retorno",
+  "inicio": "2022-01-01",
+  "fim": "2023-12-31",
+  "trials": 30,
+  "dobras_cv": 5,
+  "moedas": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB",
+    "DOGE"
+  ],
+  "sementes": [
+    42,
+    7,
+    123,
+    2024,
+    31415
+  ],
+  "hp_padrao": {
+    "arquitetura": "Transformer",
+    "janela": 14,
+    "d_modelo": 32,
+    "cabecas": 4,
+    "camadas": 2,
+    "dropout": 0.1,
+    "lr": 0.0005,
+    "batch": 32,
+    "epocas": 100,
+    "paciencia": 15
+  },
+  "hp_optuna": {
+    "arquitetura": "Transformer",
+    "janela": 30,
+    "d_modelo": 16,
+    "cabecas": 4,
+    "camadas": 3,
+    "dropout": 0.16444241977155707,
+    "lr": 0.003403330706505351,
+    "batch": 16,
+    "epocas": 100,
+    "paciencia": 15
+  }
+}

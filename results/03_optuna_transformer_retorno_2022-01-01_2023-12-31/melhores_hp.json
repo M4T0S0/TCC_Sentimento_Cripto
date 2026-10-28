@@ -1,0 +1,12 @@
+{
+  "arquitetura": "Transformer",
+  "janela": 30,
+  "d_modelo": 16,
+  "cabecas": 4,
+  "camadas": 3,
+  "dropout": 0.16444241977155707,
+  "lr": 0.003403330706505351,
+  "batch": 16,
+  "epocas": 100,
+  "paciencia": 15
+}

@@ -1,0 +1,24 @@
+{
+  "inicio": "2022-01-01",
+  "fim": "2023-12-31",
+  "moedas": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB",
+    "DOGE"
+  ],
+  "modelo": "ElKulako/cryptobert",
+  "max_tokens": 128,
+  "padroes_moeda": {
+    "BTC": "bitcoin|\\bbtc\\b",
+    "ETH": "ethereum|\\beth\\b|\\bether\\b",
+    "SOL": "solana|\\bsol\\b",
+    "BNB": "\\bbnb\\b|binance coin|bnb chain",
+    "DOGE": "dogecoin|\\bdoge\\b"
+  },
+  "arquivos": [
+    "cryptonews.csv",
+    "dataset_52-person-from-2021-02-05_2023-06-12_21-34-17-266_with_sentiment.csv"
+  ]
+}

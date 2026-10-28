@@ -1,0 +1,11 @@
+metodo,moeda,dias,dias_proprios_Tweet,dias_do_btc_Tweet,dias_ffill_Tweet,dias_proprios_Noticia,dias_do_btc_Noticia,dias_ffill_Noticia
+ffill,BTC,730,503,0,227,715,0,15
+ffill,ETH,730,382,0,348,657,0,73
+ffill,SOL,730,163,0,567,468,0,262
+ffill,BNB,730,184,0,546,372,0,358
+ffill,DOGE,730,106,0,624,425,0,305
+btc,BTC,730,503,0,227,715,0,15
+btc,ETH,730,382,134,214,657,58,15
+btc,SOL,730,163,342,225,468,247,15
+btc,BNB,730,184,321,225,372,343,15
+btc,DOGE,730,106,397,227,425,290,15

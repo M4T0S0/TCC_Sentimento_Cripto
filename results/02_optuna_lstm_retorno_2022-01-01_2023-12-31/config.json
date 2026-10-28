@@ -1,0 +1,41 @@
+{
+  "alvo": "retorno",
+  "inicio": "2022-01-01",
+  "fim": "2023-12-31",
+  "trials": 30,
+  "dobras_cv": 5,
+  "moedas": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB",
+    "DOGE"
+  ],
+  "sementes": [
+    42,
+    7,
+    123,
+    2024,
+    31415
+  ],
+  "hp_padrao": {
+    "janela": 14,
+    "hidden": 64,
+    "camadas": 1,
+    "dropout": 0.1,
+    "lr": 0.001,
+    "batch": 32,
+    "epocas": 100,
+    "paciencia": 15
+  },
+  "hp_optuna": {
+    "janela": 14,
+    "hidden": 64,
+    "camadas": 2,
+    "dropout": 0.31005312934444584,
+    "lr": 0.007568292060167618,
+    "batch": 64,
+    "epocas": 100,
+    "paciencia": 15
+  }
+}
