@@ -1,5 +1,5 @@
 modelo,naive_MAPE_%,LSTM,LSTM,LSTM,Transformer,Transformer,Transformer,sentimento_melhor,sentimento_pior,comparacoes
-variante,,financeiro,sentimento_ffill,sentimento_btc,financeiro,sentimento_ffill,sentimento_btc,"p<0,05","p<0,05",
+variante,,financeiro,sentimento_ffill,sentimento_copia_btc,financeiro,sentimento_ffill,sentimento_copia_btc,"p<0,05","p<0,05",
 regime,,,,,,,,,,
 Queda 2022,3.367,1.023,1.032,1.028,1.028,1.056,1.03,1,2,20
 Lateral 2023,2.038,1.023,1.029,1.027,1.028,1.033,1.033,0,0,20

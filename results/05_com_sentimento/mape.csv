@@ -1,5 +1,5 @@
 modelo,naive,LSTM,LSTM,LSTM,Transformer,Transformer,Transformer
-variante,,financeiro,sentimento_ffill,sentimento_btc,financeiro,sentimento_ffill,sentimento_btc
+variante,,financeiro,sentimento_ffill,sentimento_copia_btc,financeiro,sentimento_ffill,sentimento_copia_btc
 moeda,,,,,,,
 BTC,1.449,1.456,1.457,1.457,1.459,1.45,1.45
 ETH,1.65,1.668,1.685,1.689,1.671,1.669,1.665

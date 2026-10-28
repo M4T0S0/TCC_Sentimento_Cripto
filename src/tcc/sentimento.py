@@ -54,10 +54,10 @@ def preencher(tab, btc=None):
 
 
 def carregar(moeda, metodo, inicio, fim, colunas=COLUNAS):
-    """Tabela diária da etapa 04 (`metodo` = 'ffill' ou 'btc')."""
-    pasta = Path('results') / f'04_sentimento_cryptobert_{inicio}_{fim}' / f'sentimento_{metodo}'
+    """Tabela diária da etapa 04 (`metodo` = 'ffill' ou 'copia_btc')."""
+    pasta = Path('results') / '04_sentimento' / metodo
     for base in [config.RAIZ, config.GRAVAVEL]:
-        arquivo = base / pasta / f'{moeda}_sentimento.csv'
+        arquivo = base / pasta / f'{moeda}.csv'
         if arquivo.exists():
             return pd.read_csv(arquivo, index_col='Date', parse_dates=True)[colunas]
-    raise FileNotFoundError(f'{pasta}/{moeda}_sentimento.csv não encontrado. Rode a etapa 04.')
+    raise FileNotFoundError(f'{pasta}/{moeda}.csv não encontrado. Rode a etapa 04.')

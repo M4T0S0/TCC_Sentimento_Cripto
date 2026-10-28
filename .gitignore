@@ -2,4 +2,4 @@ __pycache__/
 .ipynb_checkpoints/
 *.zip
 data/textos/
-results/04_sentimento_cryptobert_*/nota_por_texto.csv
+results/04_sentimento/nota_por_texto.csv

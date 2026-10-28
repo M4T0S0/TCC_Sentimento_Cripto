@@ -19,7 +19,7 @@
   "variantes": {
     "financeiro": null,
     "sentimento_ffill": "ffill",
-    "sentimento_btc": "btc"
+    "sentimento_copia_btc": "copia_btc"
   },
   "colunas_sentimento": [
     "SentimentoTweet",

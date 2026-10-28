@@ -1,5 +1,5 @@
 modelo,,LSTM,LSTM,LSTM,Transformer,Transformer,Transformer
-variante,,financeiro,sentimento_ffill,sentimento_btc,financeiro,sentimento_ffill,sentimento_btc
+variante,,financeiro,sentimento_ffill,sentimento_copia_btc,financeiro,sentimento_ffill,sentimento_copia_btc
 regime,moeda,,,,,,
 Queda 2022,BTC,1.034,1.037,1.037,1.029,1.024,1.024
 Queda 2022,ETH,1.023,1.019,1.025,1.015,1.028,1.025

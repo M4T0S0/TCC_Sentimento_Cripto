@@ -19,7 +19,7 @@
   "variantes": {
     "financeiro": null,
     "sentimento_ffill": "ffill",
-    "sentimento_btc": "btc"
+    "sentimento_copia_btc": "copia_btc"
   },
   "inicio_teste": "2022-05-01",
   "meses_por_bloco": 2,

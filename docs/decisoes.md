@@ -6,7 +6,7 @@
 
 **Observação:** esta etapa usa uma LSTM padrão, com hiperparâmetros fixos escolhidos à mão (`HP_LSTM` em `config.py`: janela 14, 64 neurônios, 1 camada, dropout 0,1, lr 0,001, batch 32, até 100 épocas com parada pela validação). O objetivo não é achar a melhor rede, só comparar os dois alvos em condições iguais. A busca de hiperparâmetros com Optuna vem na etapa seguinte, já com o alvo escolhido aqui.
 
-**Experimento:** `notebooks/01_lstm_preco_vs_retorno.ipynb`, com a mesma LSTM, os mesmos dados OHLCV e só o alvo trocado.
+**Experimento:** `notebooks/01_alvo.ipynb`, com a mesma LSTM, os mesmos dados OHLCV e só o alvo trocado.
 - 2022-01-01 a 2023-12-31, divisão 70/15/15.
 - Teste de 13/09 a 31/12/2023 (110 dias).
 - 5 sementes.
@@ -20,7 +20,7 @@
 | DOGE | 2,14 | 2,43 | 2,16 |
 | **Média** | **2,16** | **2,68** | **2,20** |
 
-MAPE em %, média de 5 sementes. Rodada oficial no Kaggle, em 27/10/2026 (`results/01_lstm_ohlcv_2022-01-01_2023-12-31/resumo.csv`).
+MAPE em %, média de 5 sementes. Rodada oficial no Kaggle, em 27/10/2026 (`results/01_alvo/resumo.csv`).
 
 **Evidência:**
 1. **Preço é pior que o naive em todas as moedas.** A diferença é significativa em 4 de 5 (Diebold-Mariano, p ≤ 0,01; DOGE p = 0,13).
@@ -37,7 +37,7 @@ MAPE em %, média de 5 sementes. Rodada oficial no Kaggle, em 27/10/2026 (`resul
 
 ## 02 · Hiperparâmetros da LSTM (Optuna)
 
-**Decisão:** a LSTM passa a usar janela de 14 dias, 64 neurônios, 2 camadas, dropout 0,31, taxa de aprendizado 0,0076 e batch 64 (`results/02_optuna_lstm_retorno_2022-01-01_2023-12-31/melhores_hp.json`).
+**Decisão:** a LSTM passa a usar janela de 14 dias, 64 neurônios, 2 camadas, dropout 0,31, taxa de aprendizado 0,0076 e batch 64 (`results/02_lstm/hiperparametros.json`).
 
 **Resultado da busca:**
 - Nenhum dos 30 trials ficou abaixo de 1. O melhor ficou em 1,007 e a mediana em 1,013.
@@ -64,7 +64,7 @@ MAPE em %, média de 5 sementes. Rodada oficial no Kaggle, em 27/10/2026 (`resul
 
 **Peso: médio.** Os hiperparâmetros mudam os números em centésimos, mas não a conclusão.
 
-**Como foi feito** (`notebooks/02_optuna_lstm.ipynb`):
+**Como foi feito** (`notebooks/02_lstm.ipynb`):
 - **Alvo:** retorno, escolhido na etapa 01.
 - **Onde a busca acontece:** só nos dias antes do teste. A validação cruzada temporal tem 5 blocos na segunda metade desse período. Cada bloco treina com todo o passado (os últimos 15% dele param o treino) e prevê o bloco seguinte. O teste da etapa 01 (13/09 a 31/12/2023) não entra na busca.
 - **Critério:** MAPE da rede ÷ MAPE do naive. Abaixo de 1, a rede é melhor que o naive. A divisão deixa moedas com volatilidades diferentes na mesma escala.
@@ -75,7 +75,7 @@ MAPE em %, média de 5 sementes. Rodada oficial no Kaggle, em 27/10/2026 (`resul
 
 ## 03 · Hiperparâmetros do Transformer (Optuna)
 
-**Decisão:** o Transformer passa a usar janela de 30 dias, d_modelo 16, 4 cabeças, 3 camadas, dropout 0,16, taxa de aprendizado 0,0034 e batch 16 (`results/03_optuna_transformer_retorno_2022-01-01_2023-12-31/melhores_hp.json`).
+**Decisão:** o Transformer passa a usar janela de 30 dias, d_modelo 16, 4 cabeças, 3 camadas, dropout 0,16, taxa de aprendizado 0,0034 e batch 16 (`results/03_transformer/hiperparametros.json`).
 
 **Resultado da busca:**
 - Nenhum dos 30 trials ficou abaixo de 1. O melhor ficou em 1,003 e a mediana em 1,011.
@@ -96,7 +96,7 @@ A LSTM Optuna é a da etapa 02, com as mesmas previsões.
 
 **Evidência:**
 1. **O Transformer também não vence o naive.** Pelo Diebold-Mariano, BTC, ETH, SOL e DOGE ficam empatados (p de 0,10 a 0,76). BNB fica um pouco pior (p = 0,01).
-2. **Transformer e LSTM empatam.** O Diebold-Mariano entre os dois não é significativo em nenhuma moeda (p de 0,12 a 0,78, em `dm_transformer_vs_lstm.csv`).
+2. **Transformer e LSTM empatam.** O Diebold-Mariano entre os dois não é significativo em nenhuma moeda (p de 0,12 a 0,78, em `diebold_mariano.csv`).
 3. **O Optuna deixa o Transformer mais estável.** O desvio entre sementes cai de até 0,09 ponto, no padrão, para no máximo 0,03.
 4. **O comportamento é o mesmo da LSTM.** A correção média prevista sobre o naive fica entre 0,07% e 0,43% ao dia. O acerto de direção fica entre 37% e 53%.
 
@@ -104,7 +104,7 @@ A LSTM Optuna é a da etapa 02, com as mesmas previsões.
 
 **Peso: médio.** Os hiperparâmetros só mudam os números em centésimos. O que importa aqui é a base sem sentimento para as duas arquiteturas.
 
-**Como foi feito** (`notebooks/03_optuna_transformer.ipynb`):
+**Como foi feito** (`notebooks/03_transformer.ipynb`):
 - **Protocolo:** o mesmo da etapa 02, com alvo retorno, validação cruzada temporal em 5 blocos antes do teste, critério MAPE ÷ naive, um conjunto para as 5 moedas e 30 trials com TPE, semente 42.
 - **Arquitetura:** cada dia da janela passa por uma camada linear até d_modelo, recebe uma posição aprendida e entra no encoder do Transformer (pré-normalização, camada interna de 2 × d_modelo). A previsão é lida no último dia.
 - **Espaço de busca:** janela {7, 14, 21, 30}, d_modelo {16, 32, 64}, cabeças {2, 4}, camadas 1 a 3, dropout 0–0,4, taxa de aprendizado 0,0001–0,01 (log), batch {16, 32, 64}.
@@ -118,10 +118,10 @@ A LSTM Optuna é a da etapa 02, com as mesmas previsões.
 - As colunas `TemNoticia` e `TemTweet` (0/1) dizem se o dia teve texto da própria moeda.
 - Os dias sem texto são preenchidos de dois jeitos, e os dois seguem para a etapa seguinte:
   - **ffill:** repete o último valor da própria moeda.
-  - **btc:** usa o valor do BTC no mesmo dia (`CopiaBTCNoticia`/`CopiaBTCTweet` = 1); se o BTC também não tiver, repete o último valor. O BTC usa só o ffill.
+  - **copia_btc:** usa o valor do BTC no mesmo dia (`CopiaBTCNoticia`/`CopiaBTCTweet` = 1); se o BTC também não tiver, repete o último valor. O BTC usa só o ffill.
 - Nos dois, antes do primeiro texto o valor é a média dos dias de treino.
 - As duas fontes são usadas, decisão do autor.
-- Tabelas finais em `results/04_sentimento_cryptobert_2022-01-01_2023-12-31/sentimento_ffill/` e `sentimento_btc/` (`{MOEDA}_sentimento.csv`).
+- Tabelas finais em `results/04_sentimento/ffill/` e `copia_btc/` (`{MOEDA}.csv`).
 
 **Textos** (2022-01-01 a 2023-12-31, rodada oficial no Kaggle em 27/10/2026): 20.203 textos diferentes.
 
@@ -138,7 +138,7 @@ A LSTM Optuna é a da etapa 02, com as mesmas previsões.
 
 **Preenchimento** (dias de 730 com valor próprio / copiado do BTC / repetido):
 
-| Moeda | Notícia ffill | Notícia btc | Tweet ffill | Tweet btc |
+| Moeda | Notícia ffill | Notícia copia_btc | Tweet ffill | Tweet copia_btc |
 |---|---|---|---|---|
 | BTC | 715 / 0 / 15 | igual | 503 / 0 / 227 | igual |
 | ETH | 657 / 0 / 73 | 657 / 58 / 15 | 382 / 0 / 348 | 382 / 134 / 214 |
@@ -163,13 +163,13 @@ Depois de 12/06/2023 não há tweet de nenhuma moeda, então nos dois métodos o
 
 **Peso: alto.** É a variável que o TCC testa.
 
-**Como foi feito** (`notebooks/04_sentimento_cryptobert.ipynb`, `src/tcc/textos.py`, `src/tcc/sentimento.py`):
+**Como foi feito** (`notebooks/04_sentimento.ipynb`, `src/tcc/textos.py`, `src/tcc/sentimento.py`):
 - **Notícias** (`cryptonews.csv`): título + ". " + texto, com a data da coluna `date`.
 - **Tweets** (`dataset_52-person-...csv`): `full_text`, com a data de `created_at`. O arquivo veio com a codificação quebrada (UTF-8 lido como latin-1) e com entidades HTML. Os dois foram desfeitos trecho a trecho, e os bytes perdidos (emojis incompletos) foram removidos.
 - **Limpeza:** espaços e quebras de linha viram um espaço. Textos vazios e repetidos dentro da mesma fonte saem.
 - **CryptoBERT:** até 128 tokens por texto, o que cobre um tweet ou um título com resumo.
 - **Preenchimento:** o valor anterior (*forward fill*) e o valor do BTC no mesmo dia usam só informação disponível até hoje. Interpolação linear usaria o valor de um dia futuro e vazaria informação.
-- **Variante btc:** a ideia é que o BTC puxa o mercado. O sentimento do BTC no mesmo dia pode ser um substituto melhor que o valor velho da própria moeda.
+- **Variante copia_btc:** a ideia é que o BTC puxa o mercado. O sentimento do BTC no mesmo dia pode ser um substituto melhor que o valor velho da própria moeda.
 
 ## 05 · O sentimento melhora a previsão?
 
@@ -177,7 +177,7 @@ Depois de 12/06/2023 não há tweet de nenhuma moeda, então nos dois métodos o
 
 **Teste** (MAPE em %, 5 sementes, 13/09 a 31/12/2023, rodada oficial no Kaggle em 27/10/2026):
 
-| Moeda | Naive | LSTM fin. | LSTM ffill | LSTM btc | Transf. fin. | Transf. ffill | Transf. btc |
+| Moeda | Naive | LSTM fin. | LSTM ffill | LSTM copia_btc | Transf. fin. | Transf. ffill | Transf. copia_btc |
 |---|---|---|---|---|---|---|---|
 | BTC | 1,45 | 1,46 | 1,46 | 1,46 | 1,46 | 1,45 | 1,45 |
 | ETH | 1,65 | 1,67 | 1,69 | 1,69 | 1,67 | 1,67 | 1,67 |
@@ -186,22 +186,22 @@ Depois de 12/06/2023 não há tweet de nenhuma moeda, então nos dois métodos o
 | DOGE | 2,14 | 2,15 | 2,14 | 2,14 | 2,16 | 2,18 | 2,16 |
 | **Média** | **2,16** | **2,19** | **2,19** | **2,19** | **2,19** | **2,20** | **2,19** |
 
-fin. = só OHLCV; ffill e btc = OHLCV + sentimento da etapa 04 com cada preenchimento. No BTC, ffill e btc são a mesma tabela.
+fin. = só OHLCV; ffill e copia_btc = OHLCV + sentimento da etapa 04 com cada preenchimento. No BTC, ffill e copia_btc são a mesma tabela.
 
 **Evidência:**
-1. **Nenhuma diferença significativa com o sentimento.** Diebold-Mariano contra a versão financeira do mesmo modelo, nas 20 comparações (2 redes × 2 preenchimentos × 5 moedas): p de 0,06 a 0,99, nenhum abaixo de 0,05 (`dm_sentimento_vs_financeiro.csv`). Os mais próximos são Transformer BTC (p = 0,06) e Transformer BNB com btc (p = 0,06), ambos a favor do sentimento, com ganho de 0,01 a 0,02 ponto.
+1. **Nenhuma diferença significativa com o sentimento.** Diebold-Mariano contra a versão financeira do mesmo modelo, nas 20 comparações (2 redes × 2 preenchimentos × 5 moedas): p de 0,06 a 0,99, nenhum abaixo de 0,05 (`diebold_mariano.csv`). Os mais próximos são Transformer BTC (p = 0,06) e Transformer BNB com copia_btc (p = 0,06), ambos a favor do sentimento, com ganho de 0,01 a 0,02 ponto.
 2. **O sentimento não leva ao piso do naive para baixo.** Nenhuma versão vence o naive. BNB continua pior que o naive em todas (p ≤ 0,02).
 3. **As redes quase não usam o sentimento.** A correção média sobre o naive passa de 0,17% para 0,19% ao dia na LSTM, e de 0,22% para 0,22–0,24% no Transformer. O acerto de direção continua entre 37% e 53%.
-4. **ffill e btc empatam.** Copiar o BTC nos dias vazios não muda a conclusão.
+4. **ffill e copia_btc empatam.** Copiar o BTC nos dias vazios não muda a conclusão.
 5. **A rodada é reproduzível.** As versões financeiras repetem exatamente os números das etapas 02 e 03.
 
 **Leitura:** o resultado confirma a etapa 04. O sentimento do CryptoBERT acompanha o retorno do mesmo dia, mas não o de amanhã. Uma rede que prevê amanhã não tem o que aproveitar dele. A conclusão vale para as duas arquiteturas e para os dois preenchimentos.
 
 **Peso: alto.** É a pergunta principal do TCC.
 
-**Como foi feito** (`notebooks/05_sentimento.ipynb`):
+**Como foi feito** (`notebooks/05_com_sentimento.ipynb`):
 - **Hiperparâmetros:** os melhores das etapas 02 (LSTM) e 03 (Transformer), iguais nas três versões. Assim, a única diferença entre as versões é a entrada.
-- **Entrada com sentimento:** OHLCV em retorno + SentimentoNoticia, SentimentoTweet, TemNoticia e TemTweet do mesmo dia. A janela vê o sentimento até hoje e prevê o retorno de amanhã. As colunas CopiaBTC não entram, para que ffill e btc só difiram no preenchimento.
+- **Entrada com sentimento:** OHLCV em retorno + SentimentoNoticia, SentimentoTweet, TemNoticia e TemTweet do mesmo dia. A janela vê o sentimento até hoje e prevê o retorno de amanhã. As colunas CopiaBTC não entram, para que ffill e copia_btc só difiram no preenchimento.
 - **Escala:** MinMax ajustada só no treino, como nas outras etapas.
 - **Comparação:** Diebold-Mariano (correção HLN, erro absoluto) na previsão média das 5 sementes.
 
@@ -221,7 +221,7 @@ fin. = só OHLCV; ffill e btc = OHLCV + sentimento da etapa 04 com cada preenchi
 
 Sentimento real (etapa 04): −0,07 a 0,10, nenhuma correlação significativa.
 
-**Teste** (MAPE médio das 5 moedas em %, 5 sementes, 13/09 a 31/12/2023, rodada oficial no Kaggle em 27/10/2026; por moeda em `tabela_mape.csv`):
+**Teste** (MAPE médio das 5 moedas em %, 5 sementes, 13/09 a 31/12/2023, rodada oficial no Kaggle em 27/10/2026; por moeda em `mape.csv`):
 
 | Versão | LSTM | Transformer | Acerto de direção (LSTM / Transf.) |
 |---|---|---|---|
@@ -247,7 +247,7 @@ Sentimento real (etapa 04): −0,07 a 0,10, nenhuma correlação significativa.
 
 **Peso: alto.** É o que separa "o sentimento não ajuda" de "o modelo não consegue usar o sentimento".
 
-**Como foi feito** (`notebooks/06_controle_sintetico.ipynb`, `src/tcc/controles.py`):
+**Como foi feito** (`notebooks/06_controle.ipynb`, `src/tcc/controles.py`):
 - Mesmos hiperparâmetros das etapas 02 e 03, mesmo alvo (retorno), mesmo teste e 5 sementes.
 - A versão financeira é a mesma da etapa 05 (mesmas previsões).
 - O sinal de amanhã entra na linha de hoje, ou seja, a janela que termina em t vê um sinal que conhece r(t+1). Isso é proposital: é o controle positivo, um sentimento que "adivinha" o mercado.
@@ -261,26 +261,26 @@ Sentimento real (etapa 04): −0,07 a 0,10, nenhuma correlação significativa.
 **Como foi feito** (`notebooks/07_walk_forward.ipynb`, `src/tcc/walkforward.py`):
 - **Período:** 609 dias previstos, de 01/05/2022 a 31/12/2023, em 10 blocos de 2 meses.
 - **Treino:** em cada bloco, a rede é retreinada com todo o passado (os últimos 15% dele param o treino, e as escalas usam só o treino) e prevê o bloco.
-- **Redes e versões:** as mesmas da etapa 05 (hiperparâmetros das etapas 02 e 03, 5 sementes): financeiro, sentimento_ffill e sentimento_btc.
+- **Redes e versões:** as mesmas da etapa 05 (hiperparâmetros das etapas 02 e 03, 5 sementes): financeiro, sentimento_ffill e sentimento_copia_btc.
 - **Regimes:** Queda 2022 (mai–dez/2022, com Terra/Luna e FTX), Lateral 2023 (jan–set/2023) e Alta fim de 2023 (out–dez/2023).
 
 **MAPE ÷ MAPE do naive** (média das 5 moedas, rodada oficial no Kaggle em 27/10/2026; abaixo de 1 = melhor que o naive):
 
-| Regime | Naive (MAPE %) | LSTM fin. | LSTM ffill | LSTM btc | Transf. fin. | Transf. ffill | Transf. btc |
+| Regime | Naive (MAPE %) | LSTM fin. | LSTM ffill | LSTM copia_btc | Transf. fin. | Transf. ffill | Transf. copia_btc |
 |---|---|---|---|---|---|---|---|
 | Queda 2022 | 3,37 | 1,023 | 1,032 | 1,028 | 1,028 | 1,056 | 1,030 |
 | Lateral 2023 | 2,04 | 1,023 | 1,029 | 1,027 | 1,028 | 1,033 | 1,033 |
 | Alta fim de 2023 | 2,38 | 1,005 | 1,007 | 1,007 | 1,008 | 1,009 | 1,006 |
 | **Todos** | **2,62** | **1,021** | **1,028** | **1,025** | **1,026** | **1,042** | **1,028** |
 
-MAPE por moeda e regime em `tabela_mape.csv`.
+MAPE por moeda e regime em `mape.csv`.
 
 **Evidência:**
 1. **Nenhuma versão vence o naive** em nenhuma das 90 combinações de regime, moeda, rede e versão (Diebold-Mariano, p < 0,05). Nos 20 meses, as redes ficam de 2% a 4% acima do erro do naive. Em 2 ou 3 das 5 moedas, a diferença é significativa.
 2. **O sentimento não melhora em nenhum regime.** Diebold-Mariano contra a versão financeira:
    - Nos 3 regimes (60 comparações): 57 empates, 1 melhora (LSTM ETH com ffill na queda de 2022, p = 0,03) e 2 pioras (BNB com ffill na queda de 2022, nas duas redes).
    - Nos 20 meses juntos (20 comparações): 18 empates e 2 pioras (BNB com ffill, nas duas redes).
-3. **O btc evita a piora da BNB.** A BNB tem notícia em só 51% dos dias. Com o ffill, o valor velho se repete por muito tempo e atrapalha a rede na queda de 2022. Copiando o BTC no dia, a BNB não piora em nenhum regime. Mesmo assim, o btc também não melhora nenhuma moeda.
+3. **O copia_btc evita a piora da BNB.** A BNB tem notícia em só 51% dos dias. Com o ffill, o valor velho se repete por muito tempo e atrapalha a rede na queda de 2022. Copiando o BTC no dia, a BNB não piora em nenhum regime. Mesmo assim, o copia_btc também não melhora nenhuma moeda.
 4. **O regime muda o tamanho do erro, mas não a conclusão.** A queda de 2022 tem o maior erro (naive 3,37%) e a lateral de 2023 o menor (2,04%). As redes ficam presas ao naive nos três. O acerto de direção fica entre 46% e 51%.
 
 **Leitura:** o resultado das etapas 05 e 06 não vem do período de teste escolhido. Em quedas, laterais e altas, o sentimento diário do CryptoBERT não leva informação sobre o retorno de amanhã que as redes possam usar.
@@ -291,16 +291,16 @@ MAPE por moeda e regime em `tabela_mape.csv`.
 
 ## 08 · Tabelas e figuras finais
 
-O notebook `notebooks/08_tabelas_figuras.ipynb` não treina nada. Ele só lê os resultados oficiais das etapas 01 a 07 e gera o material do texto em `results/08_tabelas_figuras/`. Todas as tabelas também saem juntas em `tabelas_tcc.xlsx`, uma por aba.
+O notebook `notebooks/08_tabelas_figuras.ipynb` não treina nada. Ele só lê os resultados oficiais das etapas 01 a 07 e gera o material do texto em `results/08_tabelas_figuras/`. Todas as tabelas também saem juntas em `tabelas.xlsx`, uma por aba.
 
 | Arquivo | Conteúdo | Etapa |
 |---|---|---|
 | `t1_alvo_preco_vs_retorno` | MAPE com alvo preço e com alvo retorno, e p contra o naive | 01 |
 | `t2_hiperparametros` | Hiperparâmetros finais da LSTM e do Transformer | 02, 03 |
 | `t3_sentimento_cobertura_correlacao` | Textos, cobertura e Spearman com o retorno de hoje e de amanhã | 04 |
-| `t4_resultado_principal` e `t4b_mape_resumido` | MAPE, desvio, RMSE, direção, p contra o naive e p contra a versão financeira | 05 |
-| `t5_controle_sintetico` | MAPE e direção para cada força do sinal sintético | 06 |
-| `t6_walk_forward_regimes` | MAPE ÷ naive por regime e contagem de DM significativos | 07 |
+| `t4_resultado_principal` e `t5_mape_resumido` | MAPE, desvio, RMSE, direção, p contra o naive e p contra a versão financeira | 05 |
+| `t6_controle_sintetico` | MAPE e direção para cada força do sinal sintético | 06 |
+| `t7_walk_forward_regimes` | MAPE ÷ naive por regime e contagem de DM significativos | 07 |
 | `f1_precos_divisao` | Preços de 2022–2023 com a divisão 70/15/15 | — |
 | `f2_sentimento_vs_retorno` | Spearman do sentimento com o retorno de hoje e de amanhã | 04 |
 | `f3_razao_naive_com_sem_sentimento` | MAPE ÷ naive por moeda, com e sem sentimento | 05 |
