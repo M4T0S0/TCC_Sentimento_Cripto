@@ -38,23 +38,25 @@ def limpar(textos):
 def noticias():
     df = pd.read_csv(achar(config.ARQ_NOTICIAS))
     return pd.DataFrame({'fonte': 'noticia', 'data': pd.to_datetime(df['date'], errors='coerce').dt.normalize(),
-                         'texto': limpar(df['title'].fillna('') + '. ' + df['text'].fillna(''))})
+                         'texto': limpar(df['title'].fillna('') + '. ' + df['text'].fillna('')),
+                         'veiculo': df['source'], 'assunto': df['subject']})
 
 
 def tweets():
     df = pd.read_csv(achar(config.ARQ_TWEETS))
     return pd.DataFrame({'fonte': 'tweet', 'data': pd.to_datetime(df['created_at'], format='%m/%d/%Y', errors='coerce'),
-                         'texto': limpar(df['full_text'])})
+                         'texto': limpar(df['full_text']), 'curtidas': df['favorite_count']})
 
 
 def por_moeda(inicio, fim):
-    """Uma linha por (moeda, texto). Um texto que cita duas moedas entra nas duas."""
+    """Uma linha por (moeda, texto). Um texto que cita duas moedas entra nas duas.
+    Notícias trazem o veículo e o assunto; tweets trazem as curtidas."""
     todos = pd.concat([noticias(), tweets()], ignore_index=True).dropna(subset=['data'])
     todos = todos[todos['data'].between(inicio, fim) & (todos['texto'] != '')]
     todos = todos.drop_duplicates(['fonte', 'texto'])
     minusculo = todos['texto'].str.lower()
     partes = [todos[minusculo.str.contains(padrao)].assign(moeda=moeda) for moeda, padrao in config.PADROES_MOEDA.items()]
-    return pd.concat(partes, ignore_index=True)[['moeda', 'fonte', 'data', 'texto']]
+    return pd.concat(partes, ignore_index=True)[['moeda', 'fonte', 'data', 'texto', 'veiculo', 'assunto', 'curtidas']]
 
 
 def cobertura(longa, inicio, fim):

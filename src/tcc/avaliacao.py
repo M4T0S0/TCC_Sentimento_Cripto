@@ -25,3 +25,14 @@ def diebold_mariano(erro_a, erro_b):
         return 0.0, 1.0
     dm = d.mean() / np.sqrt(d.var() / n) * np.sqrt((n - 1) / n)
     return float(dm), float(2 * stats.t.sf(abs(dm), n - 1))
+
+
+def benjamini_hochberg(p):
+    """p ajustado para muitos testes ao mesmo tempo (controle da taxa de falsas descobertas)."""
+    p = np.asarray(p, dtype=float)
+    ordem = np.argsort(p)
+    ajustado = p[ordem] * len(p) / np.arange(1, len(p) + 1)
+    ajustado = np.minimum.accumulate(ajustado[::-1])[::-1]
+    saida = np.empty_like(p)
+    saida[ordem] = np.minimum(ajustado, 1)
+    return saida

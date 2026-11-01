@@ -1,0 +1,61 @@
+{
+  "alvo": "retorno",
+  "inicio": "2022-01-01",
+  "fim": "2023-12-31",
+  "moedas": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB",
+    "DOGE"
+  ],
+  "sementes": [
+    42,
+    7,
+    123,
+    2024,
+    31415
+  ],
+  "segmentos": [
+    "noticia_CoinTelegraph",
+    "noticia_CryptoNews",
+    "noticia_CryptoPotato",
+    "assunto_altcoin",
+    "assunto_bitcoin",
+    "assunto_blockchain",
+    "assunto_defi",
+    "assunto_ethereum",
+    "assunto_nft",
+    "texto_forte",
+    "texto_fraco",
+    "tweet_popular",
+    "tweet_comum"
+  ],
+  "texto_forte": 0.5,
+  "min_dias_sinal": 60,
+  "min_dias_modelo": 100,
+  "hp": {
+    "LSTM": {
+      "janela": 14,
+      "hidden": 64,
+      "camadas": 2,
+      "dropout": 0.31005312934444584,
+      "lr": 0.007568292060167618,
+      "batch": 64,
+      "epocas": 100,
+      "paciencia": 15
+    },
+    "Transformer": {
+      "arquitetura": "Transformer",
+      "janela": 30,
+      "d_modelo": 16,
+      "cabecas": 4,
+      "camadas": 3,
+      "dropout": 0.16444241977155707,
+      "lr": 0.003403330706505351,
+      "batch": 16,
+      "epocas": 100,
+      "paciencia": 15
+    }
+  }
+}

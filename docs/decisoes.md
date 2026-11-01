@@ -308,6 +308,39 @@ O notebook `notebooks/08_tabelas_figuras.ipynb` não treina nada. Ele só lê os
 | `f5_walk_forward_regimes` | MAPE ÷ naive por regime | 07 |
 | `f6_exemplo_btc_teste` | Previsões do Transformer no BTC (15/10 a 30/11/2023) contra o real e o naive | 05 |
 
+## 09 · Sentimento por segmento
+
+**Resultado:** nenhum tipo de texto ajuda nem atrapalha de forma confiável. Separar o sentimento por veículo, assunto, força ou engajamento não revela um segmento útil nem um segmento "enganoso".
+
+**Segmentos** (13, testados em cada moeda; contagem em `contagem_segmentos.csv`):
+- Veículo da notícia: CoinTelegraph, CryptoNews e CryptoPotato.
+- Assunto da notícia: altcoin, bitcoin, blockchain, defi, ethereum e nft.
+- Força: texto forte (|nota| ≥ 0,5) e fraco.
+- Tweets: populares (25% mais curtidos no treino) e comuns.
+
+Defi e nft têm poucos textos e ficaram fora dos dois testes. Os demais entram quando têm pelo menos 60 dias com texto (sinal) ou 100 dias (modelo).
+
+**Sinal** (48 pares segmento × moeda, Spearman nos dias com texto, em `sinal_por_segmento.csv`):
+- Com o retorno de hoje, 44 dos 48 pares têm correlação positiva (até 0,27). O segmento repete o padrão da etapa 04.
+- Com o retorno de amanhã, a correlação fica entre −0,14 e 0,12. Só um par tem p < 0,05 antes do ajuste: notícias de altcoin no BTC (ρ = −0,14, p = 0,004, acerto de direção de 44%). Depois do ajuste de Benjamini-Hochberg para os 48 testes, o p sobe para 0,20 e nenhum par é significativo.
+
+**Modelo** (86 pares segmento × moeda × rede, 5 sementes, contra a versão financeira da etapa 05, em `efeito_no_modelo.csv`):
+- A diferença de MAPE fica entre −0,04 e +0,04 ponto, com mediana de +0,005 (levemente pior).
+- Antes do ajuste, 9 pares têm p < 0,05: 4 pioram (3 no ETH e 1 no BTC) e 5 melhoram, todos no Transformer e na BNB. Depois do ajuste, nenhum fica abaixo de 0,05 (o menor é 0,12).
+
+**Leitura:**
+- Um segmento "enganoso" apontaria de forma consistente para o lado errado de amanhã. Isso não acontece: o único candidato (altcoin no BTC) não resiste ao ajuste para muitos testes e não se repete nas outras moedas.
+- As melhoras isoladas, todas na BNB com o Transformer, combinam com o que a etapa 06 mostrou: diferenças pequenas e "significativas" aparecem mesmo com colunas sem informação sobre amanhã.
+- Assim, a falta de ganho das etapas 05 e 07 não vem de um tipo de texto ruim que anularia os bons. Todos os segmentos se comportam como o sentimento médio: acompanham o dia e não antecipam o seguinte.
+
+**Peso: médio.** Reforça a conclusão principal e descarta a hipótese de que o ganho estaria escondido em algum segmento.
+
+**Como foi feito** (`notebooks/09_segmentos.ipynb`, `src/tcc/segmentos.py`, rodada oficial no Kaggle em 01/11/2026):
+- As notas do CryptoBERT são as da etapa 04 (`nota_por_texto.csv`). O veículo e o assunto vêm das colunas `source` e `subject` do arquivo de notícias, e as curtidas da coluna `favorite_count` dos tweets.
+- Cada segmento vira uma série diária própria, preenchida como o ffill da etapa 04 (coluna `Tem` + último valor + média do treino antes do primeiro texto).
+- No teste do modelo, o OHLCV recebe só as colunas `Sentimento` e `Tem` do segmento, com os hiperparâmetros das etapas 02 e 03.
+- O p de cada teste é ajustado por Benjamini-Hochberg dentro de cada bloco (sinal e modelo), para que os ~5% de falsos positivos esperados por acaso não pareçam resultado.
+
 ## Conclusão geral
 
 1. **O alvo retorno é o correto** (etapa 01). O alvo preço fica pior que o naive em todas as moedas.
@@ -316,5 +349,6 @@ O notebook `notebooks/08_tabelas_figuras.ipynb` não treina nada. Ele só lê os
 4. **Somar o sentimento não melhora a LSTM nem o Transformer**, com nenhum dos dois preenchimentos (etapa 05).
 5. **As redes conseguiriam usar um sentimento útil** (etapa 06). Com um sinal que antecipa o retorno, o erro cai até 4 vezes abaixo do naive. O ganho só aparece com correlação de uns 0,3 ou mais com o amanhã, e o sentimento real fica perto de 0.
 6. **A conclusão vale nos três regimes de mercado** de maio/2022 a dezembro/2023 (etapa 07).
+7. **Nenhum tipo de texto ajuda ou engana de forma confiável** (etapa 09). Veículo, assunto, força e engajamento se comportam como o sentimento médio.
 
 Em resumo, a falta de ganho vem da informação, e não do modelo: o sentimento diário público chega ao preço no mesmo dia. Isso é coerente com a hipótese de mercado eficiente na forma semiforte.
