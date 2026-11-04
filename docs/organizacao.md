@@ -35,10 +35,11 @@ Cada etapa tem um número e um nome curto. O notebook e a pasta de resultados us
 | 07 | `07_walk_forward` | Repetição da comparação em três regimes de mercado |
 | 08 | `08_tabelas_figuras` | Tabelas e figuras do texto do TCC |
 | 09 | `09_segmentos` | Sentimento separado por veículo, assunto, força e engajamento |
+| 10 | `10_validacao_manual` | Comparação do CryptoBERT com rótulos manuais |
 
 O período (2022-01-01 a 2023-12-31) e o alvo não aparecem no nome das pastas. Eles ficam no `config.json` de cada pasta de resultados, junto com os demais parâmetros da rodada.
 
-As etapas dependem umas das outras na ordem dos números. A 03 lê as previsões da 02, a 05 lê os hiperparâmetros da 02 e da 03 e o sentimento da 04, a 06 e a 07 reaproveitam a 05, a 08 só lê os resultados de 01 a 07, e a 09 usa as notas da 04 e a versão financeira da 05.
+As etapas dependem umas das outras na ordem dos números. A 03 lê as previsões da 02, a 05 lê os hiperparâmetros da 02 e da 03 e o sentimento da 04, a 06 e a 07 reaproveitam a 05, a 08 só lê os resultados de 01 a 07, a 09 usa as notas da 04 e a versão financeira da 05, e a 10 usa as notas da 04.
 
 ## Código (`src/tcc/`)
 
@@ -55,6 +56,7 @@ As etapas dependem umas das outras na ordem dos números. A 03 lê as previsões
 | `controles.py` | Sinal sintético usado no controle da etapa 06 |
 | `walkforward.py` | Retreino em blocos de meses e rótulo de regime |
 | `segmentos.py` | Separação do sentimento por tipo de texto (etapa 09) |
+| `validacao.py` | Amostra, planilha e concordância da validação manual (etapa 10) |
 
 Todos os notebooks começam da mesma forma: encontram a pasta do projeto, no computador ou no dataset do Kaggle, e importam `tcc`. No Kaggle o dataset é só de leitura, então as saídas vão para `/kaggle/working/results/` e depois são copiadas para `results/`.
 
@@ -86,6 +88,7 @@ Todos os números de `results/` vêm da rodada oficial no Kaggle. Quando uma eta
 | Item | Motivo |
 |---|---|
 | `data/textos/` | Notícias (`cryptonews.csv`) e tweets brutos, publicados por terceiros |
+| `data/validacao/` | Planilha da validação manual, que contém os textos |
 | `results/04_sentimento/nota_por_texto.csv` | Contém o texto original de cada notícia e tweet |
 | `data/precos/` | Baixado do Yahoo Finance na primeira execução |
 | `*.zip` | Pacotes que o Kaggle gera para download |

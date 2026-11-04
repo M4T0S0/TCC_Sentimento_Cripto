@@ -1,0 +1,4 @@
+fonte,textos,acuracia_%,kappa,kappa_ponderado
+todas,102,52.941,0.294,0.368
+noticia,51,52.941,0.294,0.365
+tweet,51,52.941,0.294,0.372

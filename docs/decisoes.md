@@ -341,6 +341,44 @@ Defi e nft têm poucos textos e ficaram fora dos dois testes. Os demais entram q
 - No teste do modelo, o OHLCV recebe só as colunas `Sentimento` e `Tem` do segmento, com os hiperparâmetros das etapas 02 e 03.
 - O p de cada teste é ajustado por Benjamini-Hochberg dentro de cada bloco (sinal e modelo), para que os ~5% de falsos positivos esperados por acaso não pareçam resultado.
 
+## 10 · Validação manual do CryptoBERT
+
+**Resultado:** o CryptoBERT acerta bem a direção quando o texto tem uma, mas confunde neutro com bullish. A concordância com a leitura humana é razoável (kappa 0,29).
+
+**Amostra:** 102 textos das notas oficiais da etapa 04, 17 em cada combinação de fonte (notícia, tweet) e classe do CryptoBERT (bearish, neutro, bullish), semente 42. Rotulados à mão por mim, sem ver a nota do modelo, em 04/11/2026.
+
+| | CryptoBERT bearish | CryptoBERT neutro | CryptoBERT bullish |
+|---|---|---|---|
+| **Manual bearish** (30) | 21 | 7 | 2 |
+| **Manual neutro** (40) | 7 | 17 | 16 |
+| **Manual bullish** (32) | 6 | 10 | 16 |
+
+| Fonte | Acurácia | Kappa | Kappa ponderado |
+|---|---|---|---|
+| Todas | 52,9% | 0,29 | 0,37 |
+| Notícias | 52,9% | 0,29 | 0,36 |
+| Tweets | 52,9% | 0,29 | 0,37 |
+
+**Evidência:**
+1. **Acima do acaso.** Com as três classes do mesmo tamanho, o acaso daria 33%. O kappa de 0,29 é uma concordância razoável na escala de Landis e Koch (0,21 a 0,40). A correlação de Spearman entre a nota e o rótulo manual é 0,49 (p < 0,001).
+2. **A direção é confiável.** Nos 45 textos em que o leitor e o modelo veem alguma direção, eles concordam em 37 (82%). Bearish e bullish quase nunca se invertem: só 8 textos.
+3. **O erro principal é o otimismo.** Dos 40 textos que eu li como neutros, o CryptoBERT marcou 16 como bullish. A nota média dos neutros é +0,16, perto da média geral (+0,30 nas notícias e +0,34 nos tweets). Isso confirma o que a etapa 04 já tinha mostrado: o 0 da nota não é neutro.
+4. **Notícias e tweets acertam o mesmo número de textos** (27 de 51), apesar de os tweets serem mais curtos e informais. O kappa sai idêntico porque, com as classes do CryptoBERT do mesmo tamanho, a concordância esperada por acaso é sempre 1/3.
+
+**Leitura:** o sentimento usado nas etapas 05 a 09 mede o tom dos textos de forma imperfeita, mas com sinal. As notas bearish são as mais confiáveis, e o viés otimista é um deslocamento que a escala MinMax e as colunas `Tem` absorvem. Um classificador melhor tende a não mudar a conclusão, porque o problema está no tempo: o sentimento acompanha o retorno do mesmo dia (etapa 04), e a etapa 06 mostrou que as redes usariam um sinal que antecipasse o dia seguinte.
+
+**Ressalvas:**
+- A amostra é balanceada por classe do CryptoBERT, então a acurácia não é a acurácia sobre todos os textos, em que 55% são bullish para o modelo.
+- Há um único anotador. Um segundo anotador permitiria medir quanto duas pessoas concordam entre si, que é o teto realista para o modelo.
+
+**Peso: médio.** Responde à pergunta "o classificador funciona?" e mostra que a falta de ganho não vem de um sentimento sem sentido.
+
+**Como foi feito** (`notebooks/10_validacao_manual.ipynb`, `src/tcc/validacao.py`):
+- A planilha mostra só o id, a fonte e o texto, em ordem aleatória, com uma lista de bearish, neutro e bullish. Ela fica fora do Git porque contém os textos (`data/validacao/`).
+- Classe do CryptoBERT: bearish com nota ≤ −1/3, bullish com nota ≥ 1/3 e neutro entre os dois, o mesmo corte da etapa 04.
+- O kappa ponderado (linear) conta bearish × bullish como erro maior que bearish × neutro.
+- `results/10_validacao_manual/rotulos.csv` guarda o id, a nota e as duas classes de cada texto, sem o texto.
+
 ## Conclusão geral
 
 1. **O alvo retorno é o correto** (etapa 01). O alvo preço fica pior que o naive em todas as moedas.
@@ -350,5 +388,6 @@ Defi e nft têm poucos textos e ficaram fora dos dois testes. Os demais entram q
 5. **As redes conseguiriam usar um sentimento útil** (etapa 06). Com um sinal que antecipa o retorno, o erro cai até 4 vezes abaixo do naive. O ganho só aparece com correlação de uns 0,3 ou mais com o amanhã, e o sentimento real fica perto de 0.
 6. **A conclusão vale nos três regimes de mercado** de maio/2022 a dezembro/2023 (etapa 07).
 7. **Nenhum tipo de texto ajuda ou engana de forma confiável** (etapa 09). Veículo, assunto, força e engajamento se comportam como o sentimento médio.
+8. **O CryptoBERT mede o tom com concordância razoável** (etapa 10). Kappa de 0,29 contra a leitura manual, com 82% de acerto na direção quando há uma, e viés otimista.
 
 Em resumo, a falta de ganho vem da informação, e não do modelo: o sentimento diário público chega ao preço no mesmo dia. Isso é coerente com a hipótese de mercado eficiente na forma semiforte.

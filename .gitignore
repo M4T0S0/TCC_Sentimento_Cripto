@@ -2,4 +2,5 @@ __pycache__/
 .ipynb_checkpoints/
 *.zip
 data/textos/
+data/validacao/
 results/04_sentimento/nota_por_texto.csv

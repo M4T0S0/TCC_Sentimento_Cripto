@@ -19,6 +19,7 @@ Cada etapa é um notebook em `notebooks/` e grava suas saídas na pasta de mesmo
 7. `07_walk_forward`: repete a comparação em queda, lateralização e alta.
 8. `08_tabelas_figuras`: gera as tabelas e figuras do texto.
 9. `09_segmentos`: separa o sentimento por veículo, assunto, força e engajamento, para ver se algum tipo de texto ajuda ou atrapalha.
+10. `10_validacao_manual`: compara a classificação do CryptoBERT com a minha, numa amostra de 102 textos.
 
 O código comum às etapas fica em `src/tcc/`.
 

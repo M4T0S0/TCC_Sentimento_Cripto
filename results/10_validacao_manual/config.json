@@ -1,0 +1,11 @@
+{
+  "por_grupo": 17,
+  "semente": 42,
+  "limite_classe": 0.3333333333333333,
+  "classes": [
+    "bearish",
+    "neutro",
+    "bullish"
+  ],
+  "modelo": "ElKulako/cryptobert"
+}
